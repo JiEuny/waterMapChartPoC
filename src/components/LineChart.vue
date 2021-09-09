@@ -1,0 +1,112 @@
+<template>
+  <div class="my-app">
+    <D3LineChart :config="chart_config" :datum="chart_data"></D3LineChart>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+import { D3LineChart } from "vue-d3-charts";
+import {mixin as VueTimers} from 'vue-timers'
+
+export default {
+    
+  mixins: [VueTimers],
+  components: {
+    D3LineChart,
+  },
+  timers: {
+    addData: { time: 5000, autostart: true, repeat:true }
+  },
+  data() {
+    return {
+      sen1: "",
+      sen2: "",
+      chart_data: [],
+      chart_config: {
+        values: ["sensor1", "sensor2"],
+        date: {
+          key: "time",
+          inputFormat: "%-I:%M:%S",
+          outputFormat: "%-I:%M:%S",
+        },
+        points: {
+          visibleSize: 3,
+          hoverSize: 6,
+        },
+        axis: {
+          yTicks: 3,
+          yTitle: "탁도값",
+          xTitle: "Time",
+        },
+        tooltip: { labels: ["sensor1", "sensor2"] },
+        color: {
+          scheme: ["#55D6BE", "#7D5BA6", "#DDDDDD", "#ACFCD9"],
+        },
+      },
+      count: "",
+    };
+  },
+  methods: {
+    log () {
+      console.log('timer')
+    },
+    addData() {
+      let today = new Date();
+
+      var hours = ("0" + today.getHours()).slice(-2);
+      var minutes = ("0" + today.getMinutes()).slice(-2);
+      var seconds = ("0" + today.getSeconds()).slice(-2);
+      var now = hours + ":" + minutes + ":" + seconds;
+    //   console.log(now);
+      const headers = {
+        "X-M2M-RI": "12345",
+        "X-M2M-Origin": "SM",
+        Accept: "application/json",
+      };
+      const sensor1url =
+        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor1/report/la";
+      //   console.log(sensorurl);
+      axios.get(sensor1url, { headers }).then((sensorResponse) => {
+        // console.log(sensorResponse.data);
+        for (const [sensorkey, sensorvalue] of Object.entries(
+          sensorResponse.data
+        )) {
+          //   console.log(sensorvalue)
+          for (const [sensorkey2, sensorvalue2] of Object.entries(
+            sensorvalue
+          )) {
+            if (sensorkey2 == "con") {
+              this.sen1 = sensorvalue2;
+            }
+          }
+        }
+      });
+      const sensor2url =
+        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor2/report/la";
+      axios.get(sensor2url, { headers }).then((sensorResponse) => {
+        for (const [sensorkey, sensorvalue] of Object.entries(
+          sensorResponse.data
+        )) {
+          for (const [sensorkey2, sensorvalue2] of Object.entries(
+            sensorvalue
+          )) {
+            if (sensorkey2 == "con") {
+              this.sen2 = sensorvalue2;
+            }
+          }
+        }
+      });
+    //   console.log("sen1: " + this.sen1);
+    //   console.log("sen2: " + this.sen2);
+      this.chart_data.push({
+        sensor1: this.sen1,
+        sensor2: this.sen2,
+        time: now,
+      });
+    },
+  },
+  mounted() {},
+};
+</script>
+
