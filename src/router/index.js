@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import NaverMap from '../components/NaverMap'
+import SensorRegist from '../components/SensorRegist'
 
 Vue.use(Router)
 
@@ -8,8 +9,18 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
-    }
+      name: 'NaverMap',
+      component: NaverMap
+    },
+    {
+      path: '/sensorRegist',
+      name: 'sensorRegist',
+      component: SensorRegist
+    },
+    {
+      path: '/sensorStatus',
+      name: 'sensorStatus',
+      component: NaverMap
+    },
   ]
 })
