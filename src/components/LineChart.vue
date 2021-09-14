@@ -39,7 +39,9 @@ export default {
           yTitle: "탁도값",
           xTitle: "Time",
         },
-        tooltip: { labels: ["sensor1", "sensor2"] },
+        tooltip: {
+          labels: ['Total hours', 'Total production']
+        },
         color: {
           scheme: ["#55D6BE", "#7D5BA6", "#DDDDDD", "#ACFCD9"],
         },
