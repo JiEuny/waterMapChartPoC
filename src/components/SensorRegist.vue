@@ -1,12 +1,12 @@
 <template>
   <div id="wrap" class="section">
     <el-row :gutter="20">
-      <el-col :span="12"> </el-col>
+      <!-- <el-col :span="12"> </el-col> -->
       <!-- <el-button class="bt" type="success" @click="geoQuery">
         geo-query 실행
       </el-button> -->
-      <el-col :span="12">
-        <div class="name2">탁도값 설정</div>
+      <el-col :span="20">
+        <!-- <div class="name2">탁도값 설정</div> -->
         <div class="request">
           <el-row :gutter="20">
             <el-col :span="4" class="content"
@@ -155,8 +155,7 @@
         </div>
         <el-row :gutter="20">
           <el-col :span="2" class="content2"></el-col>
-          <el-col :span="18" class="content2">
-          </el-col>
+          <el-col :span="18" class="content2"> </el-col>
         </el-row>
 
         <el-button type="success" v-on:click="click">File Download</el-button>
@@ -185,8 +184,8 @@ export default {
       headers: {
         "X-M2M-RI": "12345",
         "X-M2M-Origin": "SM",
-        Accept: "application/json",
-        "Content-Type": "application/json; ty=4",
+        // Accept: "application/json",
+        // "Content-Type": "application/json; ty=4",
       },
       baseURL: "http://203.253.128.139:7599",
       response: "Response",
@@ -208,7 +207,7 @@ export default {
   },
   methods: {
     getSensors() {
-        console.log("work?")
+      console.log("work?");
       axios
         .get(this.baseURL + "/wdc_base/kwater-test", {
           headers: this.headers,
@@ -514,12 +513,22 @@ export default {
       });
     },
     click() {
-      const blob = new Blob(["res.data"], { type: "text/csv;charset=utf8" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "this.csv";
-      link.click();
-      URL.revokeObjectURL(link.href);
+      axios
+        .get("http://203.253.128.179/kwater/test.csv", {
+          //   headers: this.headers,
+          responseType: "blob",
+        })
+        .then(({ response }) => {
+          const blob = new Blob([response], {
+            type: "text/csv;charset=utf8",
+          });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "test.csv";
+          link.click();
+          URL.revokeObjectURL(link.href);
+        })
+        .catch(console.error);
     },
   },
   mounted() {

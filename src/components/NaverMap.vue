@@ -5,29 +5,57 @@
         <div id="naverMap" class="map"></div>
       </el-col>
       <el-col :span="12">
-        <div class="name2">탁도 센서</div>
-        <div v-for="sensor in sensorInfoList" :key="sensor.rn">
-          <div class="request">
-            <el-row :gutter="20">
-              <el-col :span="4" class="content">
-                <el-button type="success" @click="goCenter(sensor)">{{
-                  sensor.rn
-                }}</el-button>
-              </el-col>
-              <el-col :span="16">
-                <LineChart v-bind:rn="sensor.rn" class="chart"> </LineChart>
-              </el-col>
-            </el-row>
-            <br />
-          </div>
-          <br />
-        </div>
-        <el-row :gutter="20">
-          <el-col :span="2" class="content2"></el-col>
-          <el-col :span="18" class="content2"> </el-col>
-        </el-row>
+        <el-tabs
+          type="border-card"
+          class="tab"
+          style="margin: 30px 30px 30px 30px"
+        >
+          <el-tab-pane label="센서 모니터링">
+            <div style="margin: 30px 0px 30px 0px">
+              <div v-for="sensor in sensorInfoList" :key="sensor.rn">
+                <div class="request">
+                  <el-row :gutter="20">
+                    <el-col :span="4">
+                      <el-button type="success" @click="goCenter(sensor)">
+                        {{ sensor.rn }}
+                      </el-button>
+                    </el-col>
+                    <el-col :span="4">
+                      <GaugeChart
+                        v-bind:rn="sensor.rn"
+                        class="chartGauge"
+                      ></GaugeChart>
+                    </el-col>
+                    <el-col :span="12">
+                      <LineChart v-bind:rn="sensor.rn" class="chart">
+                      </LineChart>
+                    </el-col>
+                  </el-row>
+                  <br />
+                </div>
+                <br />
+              </div>
+              <el-row :gutter="20">
+                <el-col :span="2" class="content2"></el-col>
+                <el-col :span="18" class="content2"> </el-col>
+              </el-row>
 
-        <el-button type="success" v-on:click="click">File Download</el-button>
+              <el-button type="success" @click="download()">
+                File Download
+              </el-button>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="센서 범위 설정">
+            <div style="margin: 30px 0px 30px 0px">
+              <SensorRegist></SensorRegist>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="센서 정보 수정">
+            <div style="margin: 30px 0px 30px 0px">
+              <SensorRegist></SensorRegist>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
       </el-col>
     </el-row>
   </div>
@@ -36,12 +64,14 @@
 <script>
 import axios from "axios";
 import LineChart from "./LineChart.vue";
+import SensorRegist from "./SensorRegist.vue";
+import GaugeChart from "./GaugeChart.vue";
 
 var map = null;
 
 export default {
   name: "hello",
-  components: { LineChart },
+  components: { LineChart, SensorRegist, GaugeChart },
   data() {
     return {
       headers: {
@@ -134,7 +164,9 @@ export default {
         });
     },
     makeMarker(sensor) {
+      this.getSensorValue(sensor.address);
       var position = new naver.maps.LatLng(sensor.loc[1], sensor.loc[0]);
+      console.log(this.icon)
       var marker = new naver.maps.Marker({
         map: map,
         position: position,
@@ -178,13 +210,23 @@ export default {
         }
       });
     },
-    click() {
-      const blob = new Blob(["res.data"], { type: "text/csv;charset=utf8" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "this.csv";
-      link.click();
-      URL.revokeObjectURL(link.href);
+    download() {
+      axios
+        .get("http://203.253.128.179/kwater/test.csv", {
+        //   headers: this.headers,
+          responseType: "blob",
+        })
+        .then(({ response }) => {
+          const blob = new Blob([response], {
+            type: "text/csv;charset=utf8",
+          });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "test.csv";
+          link.click();
+            URL.revokeObjectURL(link.href);
+        })
+        .catch(console.error);
     },
   },
   mounted() {
@@ -241,5 +283,11 @@ export default {
 
 .chart {
   height: 120px;
+  margin: 0px 0px 0px 50px;
+}
+
+.chartGauge {
+  height: 100px;
+  margin: 30px 0px 0px 0px;
 }
 </style>

@@ -4,7 +4,7 @@
         <el-menu mode="horizontal" default-active="2" class="nav"
           background-color="#3b4346" text-color="#fff" active-text-color="#ffd04b">
 
-          <el-menu-item index="3">
+          <!-- <el-menu-item index="3">
             <router-link to="/sensorRegist" style="font-size:1.5em">센서 등록 및 승인</router-link>
           </el-menu-item>
 
@@ -12,7 +12,7 @@
 
           <el-menu-item index="4">
             <router-link to="/sensorStatus" style="font-size:1.5em">센서 상태 확인</router-link>
-          </el-menu-item>
+          </el-menu-item> -->
 
           <a/>
 
