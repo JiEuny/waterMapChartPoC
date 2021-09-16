@@ -142,7 +142,6 @@
           <el-col :span="18" class="content2"> </el-col>
         </el-row>
 
-        <el-button type="success" v-on:click="click">File Download</el-button>
       </el-col>
     </el-row>
   </div>
@@ -168,10 +167,13 @@ export default {
       headers: {
         "X-M2M-RI": "12345",
         "X-M2M-Origin": "SM",
-        // Accept: "application/json",
-        // "Content-Type": "application/json; ty=4",
+        Accept: "application/json",
+        "Content-Type": "application/json; ty=4",
       },
       baseURL: "http://203.253.128.139:7599",
+      sensorList: [],
+      sensorInfoList: [],
+      //
       response: "Response",
       polyPaths: [],
       sensor1ReportTime: "",
@@ -191,7 +193,6 @@ export default {
   },
   methods: {
     getSensors() {
-      console.log("work?");
       axios
         .get(this.baseURL + "/wdc_base/kwater-test", {
           headers: this.headers,
@@ -202,9 +203,32 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data);
+          for (const [key, value] of Object.entries(response.data)) {
+            this.sensorList = value;
+            for (const i of this.sensorList) {
+              this.getSensorInfo(i);
+            }
+          }
         });
     },
+    getSensorInfo(sensorAddress) {
+      axios
+        .get(this.baseURL + "/" + sensorAddress, {
+          headers: this.headers,
+        })
+        .then((response) => {
+          for (const [key, value] of Object.entries(response.data)) {
+            this.sensorInfoList.push({
+              address: sensorAddress,
+              rn: value.rn,
+              loc: value.loc.crd,
+            });
+          }
+        });
+        console.log(this.sensorInfoList)
+    //   this.getSensorValue(sensorAddress);
+    },
+    //
     config1: function (reportTime, min, max) {
       console.log(reportTime + ", " + min + ", " + max);
       const headers = {
@@ -469,23 +493,6 @@ export default {
                               }
                             }
                           }
-
-                          //   for (var i = 0, ii = markers.length; i < ii; i++) {
-                          //     naver.maps.Event.addListener(
-                          //       markers[i],
-                          //       "click",
-                          //       function (e) {
-                          //         var marker = markers[i],
-                          //           infoWindow = infoWindows[i];
-
-                          //         if (infoWindow.getMap()) {
-                          //           infoWindow.close();
-                          //         } else {
-                          //           infoWindow.open(map, marker);
-                          //         }
-                          //       }
-                          //     );
-                          //   }
                         }
                       }
                     });
@@ -516,16 +523,7 @@ export default {
     },
   },
   mounted() {
-    map = new naver.maps.Map(document.getElementById("naverMap"), {
-      center: new naver.maps.LatLng(37.41229359683477, 127.12875737226753),
-      zoom: 16,
-      zoomControl: true,
-      zoomControlOptions: {
-        position: naver.maps.Position.RIGHT_TOP,
-      },
-    });
-    this.configSetting();
-    this.getBound();
+      this.getSensors()
   },
 };
 </script>

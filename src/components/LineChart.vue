@@ -47,9 +47,9 @@ export default {
         // },
         margin: {
           top: 10,
-          right: 20,
+          right: 10,
           bottom: 180,
-          left: 20,
+          left: 10,
         },
       },
       count: "",
@@ -66,7 +66,6 @@ export default {
       var minutes = ("0" + today.getMinutes()).slice(-2);
       var seconds = ("0" + today.getSeconds()).slice(-2);
       var now = hours + ":" + minutes + ":" + seconds;
-      //   console.log(now);
       const headers = {
         "X-M2M-RI": "12345",
         "X-M2M-Origin": "SM",
@@ -74,13 +73,10 @@ export default {
       };
       const sensor1url =
         "http://203.253.128.139:7599/wdc_base/kwater-test/"+ this.rn + "/report/la";
-      //   console.log(sensorurl);
       axios.get(sensor1url, { headers }).then((sensorResponse) => {
-        // console.log(sensorResponse.data);
         for (const [sensorkey, sensorvalue] of Object.entries(
           sensorResponse.data
         )) {
-          //   console.log(sensorvalue)
           for (const [sensorkey2, sensorvalue2] of Object.entries(
             sensorvalue
           )) {
@@ -90,26 +86,8 @@ export default {
           }
         }
       });
-    //   const sensor2url =
-    //     "http://203.253.128.139:7599/wdc_base/kwater-test/sensor2/report/la";
-    //   axios.get(sensor2url, { headers }).then((sensorResponse) => {
-    //     for (const [sensorkey, sensorvalue] of Object.entries(
-    //       sensorResponse.data
-    //     )) {
-    //       for (const [sensorkey2, sensorvalue2] of Object.entries(
-    //         sensorvalue
-    //       )) {
-    //         if (sensorkey2 == "con") {
-    //           this.sen2 = sensorvalue2;
-    //         }
-    //       }
-    //     }
-    //   });
-      //   console.log("sen1: " + this.sen1);
-      //   console.log("sen2: " + this.sen2);
       this.chart_data.push({
         sensor1: this.sen1,
-        // sensor2: this.sen2,
         time: now,
       });
     },

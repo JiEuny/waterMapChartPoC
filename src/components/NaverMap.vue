@@ -16,7 +16,7 @@
                 <div class="request">
                   <el-row :gutter="20">
                     <el-col :span="4">
-                      <el-button type="success" @click="goCenter(sensor)">
+                      <el-button type="success" @click="goCenter(sensor)" class="bt">
                         {{ sensor.rn }}
                       </el-button>
                     </el-col>
@@ -26,7 +26,7 @@
                         class="chartGauge"
                       ></GaugeChart>
                     </el-col>
-                    <el-col :span="12">
+                    <el-col :span="16">
                       <LineChart v-bind:rn="sensor.rn" class="chart">
                       </LineChart>
                     </el-col>
@@ -52,7 +52,7 @@
           </el-tab-pane>
           <el-tab-pane label="센서 정보 수정">
             <div style="margin: 30px 0px 30px 0px">
-              <SensorRegist></SensorRegist>
+              <SensorInfo></SensorInfo>
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -66,12 +66,13 @@ import axios from "axios";
 import LineChart from "./LineChart.vue";
 import SensorRegist from "./SensorRegist.vue";
 import GaugeChart from "./GaugeChart.vue";
+import SensorInfo from "./SensorInfo.vue"
 
 var map = null;
 
 export default {
   name: "hello",
-  components: { LineChart, SensorRegist, GaugeChart },
+  components: { LineChart, SensorRegist, GaugeChart, SensorInfo },
   data() {
     return {
       headers: {
@@ -261,6 +262,7 @@ export default {
   font-size: 1.3em;
   padding: 1em;
   min-height: 50px;
+  min-width: 850px;
 }
 
 .name2 {
@@ -272,22 +274,26 @@ export default {
 
 .content {
   border-radius: 4px;
-  min-height: 36px;
+  min-height: 30px;
 }
 
 .content2 {
-  margin: 0px 30px 0px 0px;
+  margin: 0px 20px 0px 0px;
   border-radius: 4px;
   min-height: 1px;
 }
 
 .chart {
   height: 120px;
-  margin: 0px 0px 0px 50px;
+  margin: 0px 0px 0px 30px;
 }
 
 .chartGauge {
   height: 100px;
   margin: 30px 0px 0px 0px;
+}
+
+.bt {
+  margin: 65px 0px 0px 0px;
 }
 </style>

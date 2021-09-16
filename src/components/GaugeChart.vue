@@ -3,9 +3,9 @@
     :start-angle="-90"
     :end-angle="90"
     :value="chartValue"
-    :separator-step="1"
+    :separator-step="0.01"
     :min="0"
-    :max="5"
+    :max="0.1"
     :gauge-color="[
       { offset: 0, color: '#347AB0' },
       { offset: 100, color: '#8CDFAD' },
@@ -18,8 +18,10 @@
 <script>
 import axios from "axios";
 import { VueSvgGauge } from "vue-svg-gauge";
+import { mixin as VueTimers } from "vue-timers";
 
 export default {
+  mixins: [VueTimers],
   name: "hello",
   components: { VueSvgGauge },
   props: ["rn"],
@@ -27,6 +29,9 @@ export default {
     return {
       chartValue: 0,
     };
+  },
+  timers: {
+    addData: { time: 5000, autostart: true, repeat: true },
   },
   methods: {
     addData() {
