@@ -187,7 +187,7 @@ export default {
                 sensor.rn +
                 "</h3>" +
                 "<p>sensorId: " +
-                value.con.sensorId +
+                value.con.sensorID +
                 "<p>contact: " +
                 value.con.contact +
                 "<p>manager: " +

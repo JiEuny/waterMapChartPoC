@@ -4,143 +4,101 @@
       <el-col :span="20">
         <div class="request">
           <el-row :gutter="20">
-            <el-col :span="4" class="content"> Sensor 1 </el-col>
-            <el-col :span="5" class="content">보고주기:</el-col>
+            <el-col :span="6" class="content">Sensor1
+
+              <!-- <el-select v-model="value" placeholder="Select">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select> -->
+            </el-col>
             <el-col :span="4" class="content"></el-col>
+            <el-col :span="5" class="content"></el-col>
             <el-col :span="1" class="content"></el-col>
             <el-col :span="4">
-              <el-input placeholder="Please input" v-model="sensor1ReportTime">
-              </el-input>
-            </el-col>
-            <el-col :span="3" class="content">초</el-col>
-          </el-row>
-          <br />
-          <el-row :gutter="20">
-            <el-col :span="4" class="content"></el-col>
-            <el-col :span="5" class="content">유효값 범위:</el-col>
-            <el-col :span="4">
-              <el-input placeholder="Please input" v-model="sensor1min">
-              </el-input>
-            </el-col>
-            <el-col :span="1">~</el-col>
-            <el-col :span="4">
-              <el-input placeholder="Please input" v-model="sensor1max">
-              </el-input>
-            </el-col>
-            <el-col :span="3">NTU</el-col>
-            <el-col :span="2" class="content">
               <el-button
                 type="info"
-                @click="config1(sensor1ReportTime, sensor1min, sensor1max)">
+                @click="config(sensorID, manufacturer, geoX, geoY, managmentDep, manager, contact)">
                 설정
               </el-button>
             </el-col>
-          </el-row>
-        </div>
-        <br />
-        <div class="request">
-          <el-row :gutter="20">
-            <el-col :span="4" class="content">Sensor 2</el-col>
-            <el-col :span="5" class="content">보고주기:</el-col>
-            <el-col :span="4" class="content"></el-col>
-            <el-col :span="1" class="content"></el-col>
-            <el-col :span="4">
-              <el-input placeholder="Please input" v-model="sensor2ReportTime">
-              </el-input>
-            </el-col>
-            <el-col :span="4" class="content">초</el-col>
+            <el-col :span="3" class="content"></el-col>
           </el-row>
           <br />
           <el-row :gutter="20">
             <el-col :span="4" class="content"></el-col>
-            <el-col :span="5" class="content">유효값 범위:</el-col>
-            <el-col :span="4">
-              <el-input placeholder="Please input" v-model="sensor2min">
-              </el-input>
-            </el-col>
-            <el-col :span="1">~</el-col>
-            <el-col :span="4">
-              <el-input placeholder="Please input" v-model="sensor2max">
-              </el-input>
-            </el-col>
-            <el-col :span="3">NTU</el-col>
-            <el-col :span="2" class="content">
-              <el-button
-                type="info"
-                @click="config2(sensor2ReportTime, sensor2min, sensor2max)"
-                >설정</el-button
-              >
-            </el-col>
-          </el-row>
-        </div>
-        <br />
-        <div class="request">
-          <el-row :gutter="20">
-            <el-col :span="4" class="content">Sensor 3</el-col>
-            <el-col :span="5" class="content">보고주기:</el-col>
-            <el-col :span="4" class="content"></el-col>
+            <el-col :span="5" class="content">센서 ID:</el-col>
             <el-col :span="1" class="content"></el-col>
-            <el-col :span="4">
-              <el-input placeholder="Please input" v-model="sensor3ReportTime">
+            <el-col :span="6">
+              <el-input placeholder="Please input" v-model="sensorID">
               </el-input>
             </el-col>
-            <el-col :span="4" class="content">초</el-col>
           </el-row>
           <br />
           <el-row :gutter="20">
             <el-col :span="4" class="content"></el-col>
-            <el-col :span="5" class="content">유효값 범위:</el-col>
-            <el-col :span="4">
-              <el-input placeholder="Please input" v-model="sensor3min">
-              </el-input>
-            </el-col>
-            <el-col :span="1">~</el-col>
-            <el-col :span="4">
-              <el-input placeholder="Please input" v-model="sensor3max">
-              </el-input>
-            </el-col>
-            <el-col :span="3">NTU</el-col>
-            <el-col :span="2" class="content">
-              <el-button type="info">설정</el-button>
-            </el-col>
-          </el-row>
-        </div>
-        <br />
-        <div class="request">
-          <el-row :gutter="20">
-            <el-col :span="4" class="content">Sensor 4</el-col>
-            <el-col :span="5" class="content">보고주기:</el-col>
-            <el-col :span="4" class="content"></el-col>
+            <el-col :span="5" class="content">제조사:</el-col>
             <el-col :span="1" class="content"></el-col>
-            <el-col :span="4">
-              <el-input placeholder="Please input" v-model="sensor4ReportTime">
+            <el-col :span="6">
+              <el-input placeholder="Please input" v-model="manufacturer">
               </el-input>
             </el-col>
-            <el-col :span="4" class="content">초</el-col>
           </el-row>
           <br />
           <el-row :gutter="20">
             <el-col :span="4" class="content"></el-col>
-            <el-col :span="5" class="content">유효값 범위:</el-col>
-            <el-col :span="4">
-              <el-input placeholder="Please input" v-model="sensor4min">
+            <el-col :span="5" class="content">좌표계:</el-col>
+            <el-col :span="1" class="content">X</el-col>
+            <el-col :span="6">
+              <el-input placeholder="Please input" v-model="geoX">
               </el-input>
             </el-col>
-            <el-col :span="1">~</el-col>
-            <el-col :span="4">
-              <el-input placeholder="Please input" v-model="sensor4max">
+          </el-row>
+          <br />
+          <el-row :gutter="20">
+            <el-col :span="4" class="content"></el-col>
+            <el-col :span="5" class="content"></el-col>
+            <el-col :span="1" class="content">Y</el-col>
+            <el-col :span="6">
+              <el-input placeholder="Please input" v-model="geoY">
               </el-input>
             </el-col>
-            <el-col :span="3">NTU</el-col>
-            <el-col :span="2" class="content">
-              <el-button type="info">설정</el-button>
+          </el-row>
+          <br />
+          <el-row :gutter="20">
+            <el-col :span="4" class="content"></el-col>
+            <el-col :span="5" class="content">관리부서:</el-col>
+            <el-col :span="1" class="content"></el-col>
+            <el-col :span="6">
+              <el-input placeholder="Please input" v-model="managmentDep">
+              </el-input>
+            </el-col>
+          </el-row>
+          <br />
+          <el-row :gutter="20">
+            <el-col :span="4" class="content"></el-col>
+            <el-col :span="5" class="content">관리자:</el-col>
+            <el-col :span="1" class="content"></el-col>
+            <el-col :span="6">
+              <el-input placeholder="Please input" v-model="manager">
+              </el-input>
+            </el-col>
+          </el-row>
+          <br />
+          <el-row :gutter="20">
+            <el-col :span="4" class="content"></el-col>
+            <el-col :span="5" class="content">연락처:</el-col>
+            <el-col :span="1" class="content"></el-col>
+            <el-col :span="6">
+              <el-input placeholder="Please input" v-model="contact">
+              </el-input>
             </el-col>
           </el-row>
         </div>
-        <el-row :gutter="20">
-          <el-col :span="2" class="content2"></el-col>
-          <el-col :span="18" class="content2"> </el-col>
-        </el-row>
+        <br />
 
       </el-col>
     </el-row>
@@ -150,20 +108,31 @@
 <script>
 import axios from "axios";
 
-var newMark = [];
-var rnList = [];
-var map = null;
-var markers = [],
-  infowindows = [];
-
-var lat,
-  lng,
-  cont = null;
-
 export default {
   name: "hello",
   data() {
     return {
+        options: [{
+          value: 'Sensor1',
+          label: 'Sensor1',
+          sensorID: "",
+      manufacturer: "", 
+      geoX: "", 
+      geoY: "", 
+      managmentDep: "", 
+      manager: "", 
+      contact: ""
+        }, {
+          value: 'Sensor2',
+          label: 'Sensor2'
+        }, {
+          value: 'Sensor3',
+          label: 'Sensor3'
+        }, {
+          value: 'Sensor4',
+          label: 'Sensor4'
+        }],
+        value: '',
       headers: {
         "X-M2M-RI": "12345",
         "X-M2M-Origin": "SM",
@@ -173,357 +142,90 @@ export default {
       baseURL: "http://203.253.128.139:7599",
       sensorList: [],
       sensorInfoList: [],
+      sensorID: "", 
+      manufacturer: "", 
+      geoX: "", 
+      geoY: "", 
+      managmentDep: "", 
+      manager: "", 
+      contact: ""
       //
-      response: "Response",
-      polyPaths: [],
-      sensor1ReportTime: "",
-      sensor2ReportTime: "",
-      sensor3ReportTime: "",
-      sensor4ReportTime: "",
-      sensor1min: "",
-      sensor2min: "",
-      sensor3min: "",
-      sensor4min: "",
-      sensor1max: "",
-      sensor2max: "",
-      sensor3max: "",
-      sensor4max: "",
-      value: "",
     };
   },
   methods: {
-    getSensors() {
-      axios
-        .get(this.baseURL + "/wdc_base/kwater-test", {
-          headers: this.headers,
-          params: {
-            fu: 1,
-            ty: 3,
-            lvl: 1,
-          },
-        })
-        .then((response) => {
-          for (const [key, value] of Object.entries(response.data)) {
-            this.sensorList = value;
-            for (const i of this.sensorList) {
-              this.getSensorInfo(i);
+    infoSetting() {
+      const sensor1url =
+        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor1/la";
+      axios.get(sensor1url, { headers: this.headers }).then((response) => {
+        console.log(response.data)
+        for (const [sensorkey, sensorvalue] of Object.entries(
+          response.data
+        )) {
+          for (const [sensorkey2, sensorvalue2] of Object.entries(
+            sensorvalue
+          )) {
+            if (sensorkey2 == "con") {
+              this.sensorID = sensorvalue2.sensorID;
+              this.manufacturer = sensorvalue2.manufacturer;
+              this.managmentDep = sensorvalue2.managmentDep;
+              this.manager = sensorvalue2.manager;
+              this.contact = sensorvalue2.contact;
+              // this.options[0].sensorID = sensorvalue2.sensorId;
+              // this.options[0].manufacturer = sensorvalue2.manufacturer;
+              // this.options[0].managmentDep = sensorvalue2.managmentDep;
+              // this.options[0].manager = sensorvalue2.manager;
+              // this.options[0].contact = sensorvalue2.contact;
             }
           }
-        });
-    },
-    getSensorInfo(sensorAddress) {
-      axios
-        .get(this.baseURL + "/" + sensorAddress, {
-          headers: this.headers,
-        })
-        .then((response) => {
-          for (const [key, value] of Object.entries(response.data)) {
-            this.sensorInfoList.push({
-              address: sensorAddress,
-              rn: value.rn,
-              loc: value.loc.crd,
-            });
+        }
+      });
+      const sensor1 =
+        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor1";
+      axios.get(sensor1, { headers: this.headers }).then((response) => {
+        // console.log(response.data)
+        for (const [sensorkey, sensorvalue] of Object.entries(
+          response.data
+        )) {
+          for (const [sensorkey2, sensorvalue2] of Object.entries(
+            sensorvalue
+          )) {
+            if (sensorkey2 == "loc") {
+              this.geoX = sensorvalue2.crd[0];
+              this.geoY = sensorvalue2.crd[1];
+              // this.options[0].sensorID = sensorvalue2.sensorId;
+              // this.options[0].manufacturer = sensorvalue2.manufacturer;
+              // this.options[0].managmentDep = sensorvalue2.managmentDep;
+              // this.options[0].manager = sensorvalue2.manager;
+              // this.options[0].contact = sensorvalue2.contact;
+            }
           }
-        });
-        console.log(this.sensorInfoList)
-    //   this.getSensorValue(sensorAddress);
+        }
+      });
+      console.log(this.options[0])
     },
     //
-    config1: function (reportTime, min, max) {
-      console.log(reportTime + ", " + min + ", " + max);
-      const headers = {
-        "X-M2M-RI": "12345",
-        "X-M2M-Origin": "SM",
-        Accept: "application/json",
-        "Content-Type": "application/json; ty=4",
-      };
+    config: function (sensorID, manufacturer, geoX, geoY, managmentDep, manager, contact) {
+      console.log(sensorID + ", " + manufacturer + ", " + managmentDep);
       const sensor1url =
-        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor1/config";
+        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor1";
       const body = {
         "m2m:cin": {
           con: {
-            reportingPeriod: reportTime,
-            validMin: min,
-            validMax: max,
+            sensorID: sensorID,
+            manufacturer: manufacturer,
+            managmentDep: managmentDep,
+            manager: manager,
+            contact: contact
           },
         },
       };
-      axios.post(sensor1url, body, { headers }).then((response) => {
+      axios.post(sensor1url, body, {headers: this.headers }).then((response) => {
         console.log(response.data);
       });
-    },
-    config2: function (reportTime, min, max) {
-      console.log(reportTime + ", " + min + ", " + max);
-      const headers = {
-        "X-M2M-RI": "12345",
-        "X-M2M-Origin": "SM",
-        Accept: "application/json",
-        "Content-Type": "application/json; ty=4",
-      };
-      const sensor1url =
-        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor2/config";
-      const body = {
-        "m2m:cin": {
-          con: {
-            reportingPeriod: reportTime,
-            validMin: min,
-            validMax: max,
-          },
-        },
-      };
-      axios.post(sensor1url, body, { headers }).then((response) => {
-        console.log(response.data);
-      });
-    },
-    configSetting() {
-      const headers = {
-        "X-M2M-RI": "12345",
-        "X-M2M-Origin": "SM",
-        Accept: "application/json",
-      };
-      const sensor1url =
-        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor1/config/la";
-      axios.get(sensor1url, { headers }).then((sensorResponse) => {
-        for (const [sensorkey, sensorvalue] of Object.entries(
-          sensorResponse.data
-        )) {
-          for (const [sensorkey2, sensorvalue2] of Object.entries(
-            sensorvalue
-          )) {
-            if (sensorkey2 == "con") {
-              this.sensor1ReportTime = sensorvalue2.reportingPeriod;
-              this.sensor1min = sensorvalue2.validMin;
-              this.sensor1max = sensorvalue2.validMax;
-            }
-          }
-        }
-      });
-      const sensor2url =
-        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor2/config/la";
-      axios.get(sensor2url, { headers }).then((sensorResponse) => {
-        for (const [sensorkey, sensorvalue] of Object.entries(
-          sensorResponse.data
-        )) {
-          for (const [sensorkey2, sensorvalue2] of Object.entries(
-            sensorvalue
-          )) {
-            if (sensorkey2 == "con") {
-              this.sensor2ReportTime = sensorvalue2.reportingPeriod;
-              this.sensor2min = sensorvalue2.validMin;
-              this.sensor2max = sensorvalue2.validMax;
-            }
-          }
-        }
-      });
-    },
-    getBound() {
-      map = new naver.maps.Map(document.getElementById("naverMap"), {
-        center: new naver.maps.LatLng(37.41229359683477, 127.12875737226753),
-        zoom: 16,
-        zoomControl: true,
-        zoomControlOptions: {
-          position: naver.maps.Position.RIGHT_TOP,
-        },
-      });
-
-      naver.maps.Event.addListener(map, "bounds_changed", function (bounds) {
-        const poly =
-          "[[" +
-          bounds.maxX() +
-          "," +
-          bounds.maxY() +
-          "],[" +
-          bounds.maxX() +
-          "," +
-          bounds.minY() +
-          "],[" +
-          bounds.minX() +
-          "," +
-          bounds.minY() +
-          "],[" +
-          bounds.minX() +
-          "," +
-          bounds.maxY() +
-          "],[" +
-          bounds.maxX() +
-          "," +
-          bounds.maxY() +
-          "]]";
-
-        const headers = {
-          "X-M2M-RI": "12345",
-          "X-M2M-Origin": "SM",
-          Accept: "application/json",
-        };
-        const url =
-          "http://203.253.128.139:7599/wdc_base/kwater-test?gsf=1&gmty=3&rcn=8&geom=" +
-          poly;
-        axios.get(url, { headers }).then((response) => {
-          for (const [key, value] of Object.entries(response.data)) {
-            for (const [key2, value2] of Object.entries(value)) {
-              for (const body of value2) {
-                for (const [key3, value3] of Object.entries(body)) {
-                  if (key3 == "loc") {
-                    // console.log(value3.crd);
-
-                    lat = value3.crd[1];
-                    lng = value3.crd[0];
-                  } else if (key3 == "rn") {
-                    cont = value3;
-                    rnList.push(cont);
-                  }
-                }
-                newMark.push([lat, lng, cont]);
-              }
-            }
-          }
-        });
-        var sensorurl;
-
-        for (const rn of rnList) {
-          sensorurl =
-            "http://203.253.128.139:7599/wdc_base/kwater-test/" +
-            rn +
-            "/report/la";
-          axios.get(sensorurl, { headers }).then((sensorResponse) => {
-            // console.log(sensorResponse.data);
-            for (const [sensorkey, sensorvalue] of Object.entries(
-              sensorResponse.data
-            )) {
-              for (const [sensorkey2, sensorvalue2] of Object.entries(
-                sensorvalue
-              )) {
-                if (sensorkey2 == "con") {
-                  console.log("rn: " + rn);
-
-                  const sensorConfurl =
-                    "http://203.253.128.139:7599/wdc_base/kwater-test/sensor1/config/la";
-                  axios
-                    .get(sensorConfurl, { headers })
-                    .then((sensorResponse) => {
-                      for (const [
-                        sensorconkey,
-                        sensorConfvalue,
-                      ] of Object.entries(sensorResponse.data)) {
-                        for (const [
-                          sensorConfkey2,
-                          sensorConfvalue2,
-                        ] of Object.entries(sensorConfvalue)) {
-                          if (sensorConfkey2 == "con") {
-                            if (
-                              sensorvalue2 < sensorConfvalue2.validMax &&
-                              sensorvalue2 > sensorConfvalue2.validMin
-                            ) {
-                              console.log("gr: " + sensorvalue2);
-                              for (var i = 0; i < newMark.length; i++) {
-                                var eachMark = new naver.maps.Marker({
-                                  position: new naver.maps.LatLng(
-                                    newMark[i][0],
-                                    newMark[i][1]
-                                  ),
-                                  map: map,
-                                  icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-                                });
-                                var infowindow = new naver.maps.InfoWindow({
-                                  content:
-                                    '<div class="iw_inner">' +
-                                    "   <h3>" +
-                                    newMark[0][2] +
-                                    "</h3>" +
-                                    "   <p>value: " +
-                                    sensorvalue2 +
-                                    "<br />" +
-                                    "   </p>" +
-                                    "</div>",
-                                });
-                                new naver.maps.Event.addListener(
-                                  eachMark,
-                                  "click",
-                                  function (e) {
-                                    if (infowindow.getMap()) {
-                                      infowindow.close();
-                                    } else {
-                                      infowindow.open(map, eachMark);
-                                    }
-                                    console.log(infowindow);
-                                  }
-                                );
-                                markers.push(eachMark);
-                                infowindows.push(infowindow);
-                              }
-                            } else {
-                              for (var i = 0; i < newMark.length; i++) {
-                                var eachMark = new naver.maps.Marker({
-                                  position: new naver.maps.LatLng(
-                                    newMark[i][0],
-                                    newMark[i][1]
-                                  ),
-                                  map: map,
-                                  icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-                                });
-                                var infowindow = new naver.maps.InfoWindow({
-                                  content:
-                                    '<div class="iw_inner">' +
-                                    "   <h3>" +
-                                    newMark[0][2] +
-                                    "</h3>" +
-                                    "   <p>value: " +
-                                    sensorvalue2 +
-                                    "<br />" +
-                                    "   </p>" +
-                                    "</div>",
-                                });
-
-                                new naver.maps.Event.addListener(
-                                  eachMark,
-                                  "click",
-                                  function (e) {
-                                    if (infowindow.getMap()) {
-                                      infowindow.close();
-                                    } else {
-                                      infowindow.open(map, eachMark);
-                                    }
-                                    console.log(infowindow);
-                                  }
-                                );
-                                markers.push(eachMark);
-                                infowindows.push(infowindow);
-                                console.log(markers);
-                                console.log(infowindows);
-                              }
-                            }
-                          }
-                        }
-                      }
-                    });
-                }
-              }
-            }
-          });
-        }
-      });
-    },
-    click() {
-      axios
-        .get("http://203.253.128.179/kwater/test.csv", {
-          //   headers: this.headers,
-          responseType: "blob",
-        })
-        .then(({ response }) => {
-          const blob = new Blob([response], {
-            type: "text/csv;charset=utf8",
-          });
-          const link = document.createElement("a");
-          link.href = URL.createObjectURL(blob);
-          link.download = "test.csv";
-          link.click();
-          URL.revokeObjectURL(link.href);
-        })
-        .catch(console.error);
     },
   },
   mounted() {
-      this.getSensors()
+      this.infoSetting()
   },
 };
 </script>
