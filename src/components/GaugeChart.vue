@@ -3,14 +3,14 @@
     :start-angle="-90"
     :end-angle="90"
     :value="chartValue"
-    :separator-step="0.01"
+    :separator-step="1"
     :min="0"
-    :max="0.1"
+    :max="10"
     :gauge-color="[
       { offset: 0, color: '#347AB0' },
       { offset: 100, color: '#8CDFAD' },
     ]"
-    :scale-interval="0.1"
+    :scale-interval="10"
     >{{ chartValue }}</VueSvgGauge
   >
 </template>

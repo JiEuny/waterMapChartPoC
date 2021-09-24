@@ -141,6 +141,7 @@
           <el-col :span="2" class="content2"></el-col>
           <el-col :span="18" class="content2"> </el-col>
         </el-row>
+          <br />
 
         <el-button type="success" v-on:click="click">File Download</el-button>
       </el-col>
@@ -174,24 +175,23 @@ export default {
       baseURL: "http://203.253.128.139:7599",
       response: "Response",
       polyPaths: [],
-      sensor1ReportTime: "",
-      sensor2ReportTime: "",
-      sensor3ReportTime: "",
-      sensor4ReportTime: "",
-      sensor1min: "",
-      sensor2min: "",
-      sensor3min: "",
-      sensor4min: "",
-      sensor1max: "",
-      sensor2max: "",
-      sensor3max: "",
-      sensor4max: "",
+      sensor1ReportTime: 0,
+      sensor2ReportTime: 0,
+      sensor3ReportTime: 0,
+      sensor4ReportTime: 0,
+      sensor1min: 0,
+      sensor2min: 0,
+      sensor3min: 0,
+      sensor4min: 0,
+      sensor1max: 0,
+      sensor2max: 0,
+      sensor3max: 0,
+      sensor4max: 0,
       value: "",
     };
   },
   methods: {
     getSensors() {
-      console.log("work?");
       axios
         .get(this.baseURL + "/wdc_base/kwater-test", {
           headers: this.headers,
@@ -202,11 +202,9 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data);
         });
     },
     config1: function (reportTime, min, max) {
-      console.log(reportTime + ", " + min + ", " + max);
       const headers = {
         "X-M2M-RI": "12345",
         "X-M2M-Origin": "SM",
@@ -225,11 +223,11 @@ export default {
         },
       };
       axios.post(sensor1url, body, { headers }).then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
       });
     },
     config2: function (reportTime, min, max) {
-      console.log(reportTime + ", " + min + ", " + max);
+      // console.log(reportTime + ", " + min + ", " + max);
       const headers = {
         "X-M2M-RI": "12345",
         "X-M2M-Origin": "SM",
@@ -248,7 +246,7 @@ export default {
         },
       };
       axios.post(sensor1url, body, { headers }).then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
       });
     },
     configSetting() {
@@ -421,7 +419,7 @@ export default {
                                     } else {
                                       infowindow.open(map, eachMark);
                                     }
-                                    console.log(infowindow);
+                                    // console.log(infowindow);
                                   }
                                 );
                                 markers.push(eachMark);
@@ -459,7 +457,7 @@ export default {
                                     } else {
                                       infowindow.open(map, eachMark);
                                     }
-                                    console.log(infowindow);
+                                    // console.log(infowindow);
                                   }
                                 );
                                 markers.push(eachMark);

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 >K-water PoC</h1>
+        <h1 >K-Water PoC</h1>
         <el-menu mode="horizontal" default-active="2" class="nav"
           background-color="#3b4346" text-color="#fff" active-text-color="#ffd04b">
 
