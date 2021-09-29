@@ -83,6 +83,16 @@ import Download from "./Download.vue"
 
 var map = null;
 
+var newMark = [];
+var rnList = [];
+var map = null;
+var markers = [],
+  infowindows = [];
+
+var lat,
+  lng,
+  cont = null;
+
 export default {
   name: "hello",
   components: { LineChart, SensorRegist, GaugeChart, SensorInfo, Download },
@@ -259,6 +269,211 @@ export default {
         })
         .catch(console.error);
     },
+    getBound() {
+      map = new naver.maps.Map(document.getElementById("naverMap"), {
+        center: new naver.maps.LatLng(37.41229359683477, 127.12875737226753),
+        zoom: 16,
+        zoomControl: true,
+        zoomControlOptions: {
+          position: naver.maps.Position.RIGHT_TOP,
+        },
+      });
+
+      naver.maps.Event.addListener(map, "bounds_changed", function (bounds) {
+        const poly =
+          "[[" +
+          bounds.maxX() +
+          "," +
+          bounds.maxY() +
+          "],[" +
+          bounds.maxX() +
+          "," +
+          bounds.minY() +
+          "],[" +
+          bounds.minX() +
+          "," +
+          bounds.minY() +
+          "],[" +
+          bounds.minX() +
+          "," +
+          bounds.maxY() +
+          "],[" +
+          bounds.maxX() +
+          "," +
+          bounds.maxY() +
+          "]]";
+
+        const headers = {
+          "X-M2M-RI": "12345",
+          "X-M2M-Origin": "SM",
+          Accept: "application/json",
+        };
+        const url =
+          "http://203.253.128.139:7599/wdc_base/kwater-test?gsf=1&gmty=3&rcn=8&geom=" +
+          poly;
+        axios.get(url, { headers }).then((response) => {
+          for (const [key, value] of Object.entries(response.data)) {
+            console.log(value)
+            for (const [key2, value2] of Object.entries(value)) {
+              for (const body of value2) {
+                for (const [key3, value3] of Object.entries(body)) {
+                  if (key3 == "loc") {
+                    // console.log(value3.crd);
+
+                    lat = value3.crd[1];
+                    lng = value3.crd[0];
+                  } else if (key3 == "rn") {
+                    cont = value3;
+                    rnList.push(cont);
+                  }
+                }
+                newMark.push([lat, lng, cont]);
+              }
+            }
+          }
+        });
+        var sensorurl;
+
+        for (const rn of rnList) {
+          sensorurl =
+            "http://203.253.128.139:7599/wdc_base/kwater-test/" +
+            rn +
+            "/report/la";
+          axios.get(sensorurl, { headers }).then((sensorResponse) => {
+            // console.log(sensorResponse.data);
+            for (const [sensorkey, sensorvalue] of Object.entries(
+              sensorResponse.data
+            )) {
+              for (const [sensorkey2, sensorvalue2] of Object.entries(
+                sensorvalue
+              )) {
+                if (sensorkey2 == "con") {
+                  console.log("rn: " + rn);
+
+                  const sensorConfurl =
+                    "http://203.253.128.139:7599/wdc_base/kwater-test/sensor1/config/la";
+                  axios
+                    .get(sensorConfurl, { headers })
+                    .then((sensorResponse) => {
+                      for (const [
+                        sensorconkey,
+                        sensorConfvalue,
+                      ] of Object.entries(sensorResponse.data)) {
+                        for (const [
+                          sensorConfkey2,
+                          sensorConfvalue2,
+                        ] of Object.entries(sensorConfvalue)) {
+                          if (sensorConfkey2 == "con") {
+                            if (
+                              sensorvalue2 < sensorConfvalue2.validMax &&
+                              sensorvalue2 > sensorConfvalue2.validMin
+                            ) {
+                              console.log("gr: " + sensorvalue2);
+                              for (var i = 0; i < newMark.length; i++) {
+                                var eachMark = new naver.maps.Marker({
+                                  position: new naver.maps.LatLng(
+                                    newMark[i][0],
+                                    newMark[i][1]
+                                  ),
+                                  map: map,
+                                  icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                                });
+                                var infowindow = new naver.maps.InfoWindow({
+                                  content:
+                                    '<div class="iw_inner">' +
+                                    "   <h3>" +
+                                    newMark[0][2] +
+                                    "</h3>" +
+                                    "   <p>value: " +
+                                    sensorvalue2 +
+                                    "<br />" +
+                                    "   </p>" +
+                                    "</div>",
+                                });
+                                new naver.maps.Event.addListener(
+                                  eachMark,
+                                  "click",
+                                  function (e) {
+                                    if (infowindow.getMap()) {
+                                      infowindow.close();
+                                    } else {
+                                      infowindow.open(map, eachMark);
+                                    }
+                                    // console.log(infowindow);
+                                  }
+                                );
+                                markers.push(eachMark);
+                                infowindows.push(infowindow);
+                              }
+                            } else {
+                              for (var i = 0; i < newMark.length; i++) {
+                                var eachMark = new naver.maps.Marker({
+                                  position: new naver.maps.LatLng(
+                                    newMark[i][0],
+                                    newMark[i][1]
+                                  ),
+                                  map: map,
+                                  icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                                });
+                                var infowindow = new naver.maps.InfoWindow({
+                                  content:
+                                    '<div class="iw_inner">' +
+                                    "   <h3>" +
+                                    newMark[0][2] +
+                                    "</h3>" +
+                                    "   <p>value: " +
+                                    sensorvalue2 +
+                                    "<br />" +
+                                    "   </p>" +
+                                    "</div>",
+                                });
+
+                                new naver.maps.Event.addListener(
+                                  eachMark,
+                                  "click",
+                                  function (e) {
+                                    if (infowindow.getMap()) {
+                                      infowindow.close();
+                                    } else {
+                                      infowindow.open(map, eachMark);
+                                    }
+                                    // console.log(infowindow);
+                                  }
+                                );
+                                markers.push(eachMark);
+                                infowindows.push(infowindow);
+                                console.log(markers);
+                                console.log(infowindows);
+                              }
+                            }
+                          }
+
+                          //   for (var i = 0, ii = markers.length; i < ii; i++) {
+                          //     naver.maps.Event.addListener(
+                          //       markers[i],
+                          //       "click",
+                          //       function (e) {
+                          //         var marker = markers[i],
+                          //           infoWindow = infoWindows[i];
+
+                          //         if (infoWindow.getMap()) {
+                          //           infoWindow.close();
+                          //         } else {
+                          //           infoWindow.open(map, marker);
+                          //         }
+                          //       }
+                          //     );
+                          //   }
+                        }
+                      }
+                    });
+                }
+              }
+            }
+          });
+        }
+      });
+    }
   },
   mounted() {
     this.getSensors();
@@ -270,6 +485,7 @@ export default {
         position: naver.maps.Position.RIGHT_TOP,
       },
     });
+    this.getBound();
   },
 };
 </script>
