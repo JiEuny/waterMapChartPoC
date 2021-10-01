@@ -101,8 +101,11 @@
             </el-col>
             <el-col :span="3">NTU</el-col>
             <el-col :span="2" class="content">
-              <el-button type="info">설정</el-button>
-            </el-col>
+              <el-button
+                type="info"
+                @click="config3(sensor3ReportTime, sensor3min, sensor3max)"
+                >설정</el-button
+              ></el-col>
           </el-row>
         </div>
         <br />
@@ -252,6 +255,29 @@ export default {
         // console.log(response.data);
       });
     },
+    config3: function (reportTime, min, max) {
+      // console.log(reportTime + ", " + min + ", " + max);
+      const headers = {
+        "X-M2M-RI": "12345",
+        "X-M2M-Origin": "SM",
+        Accept: "application/json",
+        "Content-Type": "application/json; ty=4",
+      };
+      const sensor1url =
+        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor3/config";
+      const body = {
+        "m2m:cin": {
+          con: {
+            reportingPeriod: reportTime,
+            validMin: min,
+            validMax: max,
+          },
+        },
+      };
+      axios.post(sensor1url, body, { headers }).then((response) => {
+        // console.log(response.data);
+      });
+    },
     config4: function (reportTime, min, max) {
       // console.log(reportTime + ", " + min + ", " + max);
       const headers = {
@@ -311,6 +337,23 @@ export default {
               this.sensor2ReportTime = sensorvalue2.reportingPeriod;
               this.sensor2min = sensorvalue2.validMin;
               this.sensor2max = sensorvalue2.validMax;
+            }
+          }
+        }
+      });
+      const sensor3url =
+        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor3/config/la";
+      axios.get(sensor3url, { headers }).then((sensorResponse) => {
+        for (const [sensorkey, sensorvalue] of Object.entries(
+          sensorResponse.data
+        )) {
+          for (const [sensorkey2, sensorvalue2] of Object.entries(
+            sensorvalue
+          )) {
+            if (sensorkey2 == "con") {
+              this.sensor3ReportTime = sensorvalue2.reportingPeriod;
+              this.sensor3min = sensorvalue2.validMin;
+              this.sensor3max = sensorvalue2.validMax;
             }
           }
         }
