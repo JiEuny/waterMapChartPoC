@@ -24,13 +24,6 @@
                         {{ sensor.rn }}
                       </el-button>
                       <Download></Download>
-                      <!-- <el-button
-                        type="success"
-                        @click="goCenter(sensor)"
-                        class="bt"
-                      >
-                        Download
-                      </el-button> -->
                     </el-col>
                     <el-col :span="4">
                       <GaugeChart
@@ -51,10 +44,6 @@
                 <el-col :span="2" class="content2"></el-col>
                 <el-col :span="18" class="content2"> </el-col>
               </el-row>
-
-              <!-- <el-button type="success" v-on:click="click">
-                File Download
-              </el-button> -->
             </div>
           </el-tab-pane>
           <el-tab-pane label="센서 범위 설정">
@@ -79,7 +68,7 @@ import LineChart from "./LineChart.vue";
 import SensorRegist from "./SensorRegist.vue";
 import GaugeChart from "./GaugeChart.vue";
 import SensorInfo from "./SensorInfo.vue";
-import Download from "./Download.vue"
+import Download from "./Download.vue";
 
 var map = null;
 
@@ -233,42 +222,6 @@ export default {
         }
       });
     },
-    download() {
-      axios
-        .get("http://203.253.128.179/kwater/test.csv", {
-          //   headers: this.headers,
-          responseType: "blob",
-        })
-        .then(({ response }) => {
-          const blob = new Blob([response], {
-            type: "text/csv;charset=utf8",
-          });
-          const link = document.createElement("a");
-          link.href = URL.createObjectURL(blob);
-          link.download = "test.csv";
-          link.click();
-          URL.revokeObjectURL(link.href);
-        })
-        .catch(console.error);
-    },
-    click() {
-      axios
-        .get("http://203.253.128.179/kwater/test.csv", {
-          //   headers: this.headers,
-          responseType: "blob",
-        })
-        .then(({ response }) => {
-          const blob = new Blob([response], {
-            type: "text/csv;charset=utf8",
-          });
-          const link = document.createElement("a");
-          link.href = URL.createObjectURL(blob);
-          link.download = "test.csv";
-          link.click();
-          URL.revokeObjectURL(link.href);
-        })
-        .catch(console.error);
-    },
     getBound() {
       map = new naver.maps.Map(document.getElementById("naverMap"), {
         center: new naver.maps.LatLng(37.41229359683477, 127.12875737226753),
@@ -313,13 +266,11 @@ export default {
           poly;
         axios.get(url, { headers }).then((response) => {
           for (const [key, value] of Object.entries(response.data)) {
-            console.log(value)
+            // console.log(value);
             for (const [key2, value2] of Object.entries(value)) {
               for (const body of value2) {
                 for (const [key3, value3] of Object.entries(body)) {
                   if (key3 == "loc") {
-                    // console.log(value3.crd);
-
                     lat = value3.crd[1];
                     lng = value3.crd[0];
                   } else if (key3 == "rn") {
@@ -340,7 +291,6 @@ export default {
             rn +
             "/report/la";
           axios.get(sensorurl, { headers }).then((sensorResponse) => {
-            // console.log(sensorResponse.data);
             for (const [sensorkey, sensorvalue] of Object.entries(
               sensorResponse.data
             )) {
@@ -399,7 +349,6 @@ export default {
                                     } else {
                                       infowindow.open(map, eachMark);
                                     }
-                                    // console.log(infowindow);
                                   }
                                 );
                                 markers.push(eachMark);
@@ -437,33 +386,13 @@ export default {
                                     } else {
                                       infowindow.open(map, eachMark);
                                     }
-                                    // console.log(infowindow);
                                   }
                                 );
                                 markers.push(eachMark);
                                 infowindows.push(infowindow);
-                                console.log(markers);
-                                console.log(infowindows);
                               }
                             }
                           }
-
-                          //   for (var i = 0, ii = markers.length; i < ii; i++) {
-                          //     naver.maps.Event.addListener(
-                          //       markers[i],
-                          //       "click",
-                          //       function (e) {
-                          //         var marker = markers[i],
-                          //           infoWindow = infoWindows[i];
-
-                          //         if (infoWindow.getMap()) {
-                          //           infoWindow.close();
-                          //         } else {
-                          //           infoWindow.open(map, marker);
-                          //         }
-                          //       }
-                          //     );
-                          //   }
                         }
                       }
                     });
@@ -473,7 +402,7 @@ export default {
           });
         }
       });
-    }
+    },
   },
   mounted() {
     this.getSensors();
@@ -509,18 +438,6 @@ export default {
   padding: 1em;
   min-height: 50px;
   min-width: 850px;
-}
-
-.name2 {
-  font-size: 1.5em;
-  margin: 0px 0px 0px 30px;
-  text-align: left;
-  padding: 1em;
-}
-
-.content {
-  border-radius: 4px;
-  min-height: 30px;
 }
 
 .content2 {

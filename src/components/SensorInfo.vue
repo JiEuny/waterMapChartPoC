@@ -124,13 +124,6 @@ export default {
         {
           value: "sensor1",
           label: "Sensor1",
-          sensorID: "",
-          manufacturer: "",
-          geoX: "",
-          geoY: "",
-          managmentDep: "",
-          manager: "",
-          contact: "",
         },
         {
           value: "sensor2",
@@ -152,9 +145,7 @@ export default {
         Accept: "application/json",
         "Content-Type": "application/json; ty=4",
       },
-      baseURL: "http://203.253.128.139:7599",
-      sensorList: [],
-      sensorInfoList: [],
+      baseURL: "http://203.253.128.139:7599/wdc_base/kwater-test/",
       sensorID: "",
       manufacturer: "",
       geoX: "",
@@ -162,16 +153,25 @@ export default {
       managmentDep: "",
       manager: "",
       contact: "",
-      //
     };
   },
   methods: {
     infoSetting() {
-      // console.log("value" + this.value);
-      const sensor1url =
-        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor1/la";
-      axios.get(sensor1url, { headers: this.headers }).then((response) => {
-        // console.log(response.data);
+      const sensor1URL = this.baseURL + "sensor1";
+      axios.get(sensor1URL, { headers: this.headers }).then((response) => {
+        for (const [sensorkey, sensorvalue] of Object.entries(response.data)) {
+          for (const [sensorkey2, sensorvalue2] of Object.entries(
+            sensorvalue
+          )) {
+            if (sensorkey2 == "loc") {
+              this.geoX = sensorvalue2.crd[0];
+              this.geoY = sensorvalue2.crd[1];
+            }
+          }
+        }
+      });
+      const sensor1InfoURL = sensor1URL + "/la"
+      axios.get(sensor1InfoURL, { headers: this.headers }).then((response) => {
         for (const [sensorkey, sensorvalue] of Object.entries(response.data)) {
           for (const [sensorkey2, sensorvalue2] of Object.entries(
             sensorvalue
@@ -182,39 +182,11 @@ export default {
               this.managmentDep = sensorvalue2.managmentDep;
               this.manager = sensorvalue2.manager;
               this.contact = sensorvalue2.contact;
-              // this.options[0].sensorID = sensorvalue2.sensorId;
-              // this.options[0].manufacturer = sensorvalue2.manufacturer;
-              // this.options[0].managmentDep = sensorvalue2.managmentDep;
-              // this.options[0].manager = sensorvalue2.manager;
-              // this.options[0].contact = sensorvalue2.contact;
             }
           }
         }
       });
-      const sensor1 =
-        "http://203.253.128.139:7599/wdc_base/kwater-test/sensor1";
-      axios.get(sensor1, { headers: this.headers }).then((response) => {
-        // console.log(response.data)
-        for (const [sensorkey, sensorvalue] of Object.entries(response.data)) {
-          for (const [sensorkey2, sensorvalue2] of Object.entries(
-            sensorvalue
-          )) {
-            if (sensorkey2 == "loc") {
-              this.geoX = sensorvalue2.crd[0];
-              this.geoY = sensorvalue2.crd[1];
-              this.options[0].sensorID = sensorvalue2.sensorId;
-              this.options[0].manufacturer = sensorvalue2.manufacturer;
-              this.options[0].managmentDep = sensorvalue2.managmentDep;
-              this.options[0].manager = sensorvalue2.manager;
-              // this.options[0].contact = sensorvalue2.contact;
-              // this.options[0].contact.reactiveSetter(sensorvalue2.contact)
-            }
-          }
-        }
-      });
-      console.log(this.options[0]);
     },
-    //
     config: function (
       sensorID,
       manufacturer,
@@ -224,9 +196,7 @@ export default {
       manager,
       contact
     ) {
-      // console.log(sensorID + ", " + manufacturer + ", " + managmentDep);
-      const sensor1url =
-        "http://203.253.128.139:7599/wdc_base/kwater-test/" + this.value;
+      const sensorURL = this.baseURL + this.value;
       const body = {
         "m2m:cin": {
           con: {
@@ -239,10 +209,9 @@ export default {
         },
       };
       axios
-        .post(sensor1url, body, { headers: this.headers })
+        .post(sensorURL, body, { headers: this.headers })
         .then((response) => {
           console.log(response.data);
-          // console.log("value" + this.value);
         });
     },
   },
