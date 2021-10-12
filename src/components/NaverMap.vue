@@ -14,6 +14,7 @@
             <div style="margin: 30px 0px 30px 0px">
               <div v-for="sensor in sensorInfoList" :key="sensor.rn">
                 <div class="request">
+                      <Alarm v-bind:rn="sensor.rn"></Alarm>
                   <el-row :gutter="20">
                     <el-col :span="4">
                       <el-button
@@ -69,14 +70,14 @@ import SensorRegist from "./SensorRegist.vue";
 import GaugeChart from "./GaugeChart.vue";
 import SensorInfo from "./SensorInfo.vue";
 import Download from "./Download.vue";
+import Alarm from "./AlarmToggle.vue";
 
 var map = null;
 
 var newMark = [];
 var rnList = [];
 var map = null;
-var markers = [],
-  infowindows = [];
+var markers = []
 
 var lat,
   lng,
@@ -84,29 +85,29 @@ var lat,
 
 export default {
   name: "hello",
-  components: { LineChart, SensorRegist, GaugeChart, SensorInfo, Download },
+  components: { LineChart, SensorRegist, GaugeChart, SensorInfo, Download, Alarm },
   data() {
     return {
       headers: {
         "X-M2M-RI": "12345",
         "X-M2M-Origin": "SM",
         Accept: "application/json",
-        "Content-Type": "application/json; ty=4",
+        "Content-Type": "application/json",
       },
       baseURL: "http://203.253.128.139:7599",
       sensorList: [],
       sensorInfoList: [],
       icon: "",
+      isActive: false
     };
   },
   methods: {
     getSensors() {
       axios
-        .get(this.baseURL + "/wdc_base/kwater-test", {
+        .get(this.baseURL + "/wdc_base/kwater-poc", {
           headers: this.headers,
           params: {
             fu: 1,
-            ty: 3,
             lvl: 1,
           },
         })
@@ -127,8 +128,8 @@ export default {
         .then((response) => {
           for (const [key, value] of Object.entries(response.data)) {
             this.sensorInfoList.push({
-              address: sensorAddress,
-              rn: value.rn,
+              address: sensorAddress, // "wdc_base/kwater-poc/sensor1"
+              rn: value.rn, // "sensor1"
               loc: value.loc.crd,
             });
           }
@@ -149,21 +150,21 @@ export default {
     getSensorValue(sensorAddress) {
       var sensorValue;
       axios
-        .get(this.baseURL + "/" + sensorAddress + "/report/la", {
+        .get(this.baseURL + "/" + sensorAddress + "/WtqltGnrlMesureIem", {
           headers: this.headers,
         })
         .then((response) => {
           for (const [key, value] of Object.entries(response.data)) {
-            sensorValue = value.con;
+            sensorValue = value.ntu;
             axios
-              .get(this.baseURL + "/" + sensorAddress + "/config/la", {
+              .get(this.baseURL + "/" + sensorAddress + "/WtqltMesureSetup", {
                 headers: this.headers,
               })
               .then((response) => {
                 for (const [key2, value2] of Object.entries(response.data)) {
                   if (
-                    sensorValue < value2.con.validMax &&
-                    sensorValue > value2.con.validMin
+                    sensorValue < value2.maxValidNtu &&
+                    sensorValue > value2.minValidNtu
                   ) {
                     this.icon =
                       "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
@@ -186,27 +187,27 @@ export default {
       });
       var info;
       axios
-        .get(this.baseURL + "/" + sensor.address + "/la", {
+        .get(this.baseURL + "/" + sensor.address, {
           headers: this.headers,
         })
         .then((response) => {
           for (const [key, value] of Object.entries(response.data)) {
+            var infoContent = "";
+            for (const lbl of value.lbl) {
+              infoContent =
+                infoContent +
+                "<p>" +
+                lbl.split(":")[0] +
+                ": " +
+                lbl.split(":")[1];
+            }
             info = new naver.maps.InfoWindow({
               content:
                 '<div class="iw_inner">' +
                 "   <h3>" +
                 sensor.rn +
                 "</h3>" +
-                "<p>sensorId: " +
-                value.con.sensorID +
-                "<p>contact: " +
-                value.con.contact +
-                "<p>manager: " +
-                value.con.manager +
-                "<p>managmentDep: " +
-                value.con.managmentDep +
-                "<p>manufacturer: " +
-                value.con.manufacturer +
+                infoContent +
                 "<br />" +
                 "   </p>" +
                 "</div>",
@@ -261,12 +262,11 @@ export default {
           "X-M2M-Origin": "SM",
           Accept: "application/json",
         };
-        const url =
-          "http://203.253.128.139:7599/wdc_base/kwater-test?gsf=1&gmty=3&rcn=8&geom=" +
-          poly;
+        const baseURL = "http://203.253.128.139:7599/wdc_base/kwater-test";
+        const url = baseURL + "?gsf=1&gmty=3&rcn=8&geom=" + poly;
         axios.get(url, { headers }).then((response) => {
           for (const [key, value] of Object.entries(response.data)) {
-            // console.log(value);
+            console.log(value);
             for (const [key2, value2] of Object.entries(value)) {
               for (const body of value2) {
                 for (const [key3, value3] of Object.entries(body)) {
@@ -286,10 +286,7 @@ export default {
         var sensorurl;
 
         for (const rn of rnList) {
-          sensorurl =
-            "http://203.253.128.139:7599/wdc_base/kwater-test/" +
-            rn +
-            "/report/la";
+          sensorurl = baseURL + "/" + rn + "/report/la";
           axios.get(sensorurl, { headers }).then((sensorResponse) => {
             for (const [sensorkey, sensorvalue] of Object.entries(
               sensorResponse.data
@@ -300,8 +297,7 @@ export default {
                 if (sensorkey2 == "con") {
                   console.log("rn: " + rn);
 
-                  const sensorConfurl =
-                    "http://203.253.128.139:7599/wdc_base/kwater-test/sensor1/config/la";
+                  const sensorConfurl = baseURL + "/" + rn + "/config/la";
                   axios
                     .get(sensorConfurl, { headers })
                     .then((sensorResponse) => {
@@ -328,31 +324,7 @@ export default {
                                   map: map,
                                   icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
                                 });
-                                var infowindow = new naver.maps.InfoWindow({
-                                  content:
-                                    '<div class="iw_inner">' +
-                                    "   <h3>" +
-                                    newMark[0][2] +
-                                    "</h3>" +
-                                    "   <p>value: " +
-                                    sensorvalue2 +
-                                    "<br />" +
-                                    "   </p>" +
-                                    "</div>",
-                                });
-                                new naver.maps.Event.addListener(
-                                  eachMark,
-                                  "click",
-                                  function (e) {
-                                    if (infowindow.getMap()) {
-                                      infowindow.close();
-                                    } else {
-                                      infowindow.open(map, eachMark);
-                                    }
-                                  }
-                                );
                                 markers.push(eachMark);
-                                infowindows.push(infowindow);
                               }
                             } else {
                               for (var i = 0; i < newMark.length; i++) {
@@ -364,32 +336,7 @@ export default {
                                   map: map,
                                   icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
                                 });
-                                var infowindow = new naver.maps.InfoWindow({
-                                  content:
-                                    '<div class="iw_inner">' +
-                                    "   <h3>" +
-                                    newMark[0][2] +
-                                    "</h3>" +
-                                    "   <p>value: " +
-                                    sensorvalue2 +
-                                    "<br />" +
-                                    "   </p>" +
-                                    "</div>",
-                                });
-
-                                new naver.maps.Event.addListener(
-                                  eachMark,
-                                  "click",
-                                  function (e) {
-                                    if (infowindow.getMap()) {
-                                      infowindow.close();
-                                    } else {
-                                      infowindow.open(map, eachMark);
-                                    }
-                                  }
-                                );
                                 markers.push(eachMark);
-                                infowindows.push(infowindow);
                               }
                             }
                           }
@@ -436,7 +383,6 @@ export default {
   margin: 0px 80px 0px 50px;
   font-size: 1.3em;
   padding: 1em;
-  min-height: 50px;
   min-width: 850px;
 }
 
@@ -448,7 +394,7 @@ export default {
 
 .chart {
   height: 120px;
-  margin: 0px 0px 0px 30px;
+  margin: -10px 0px 0px 30px;
 }
 
 .chartGauge {

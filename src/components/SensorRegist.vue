@@ -69,7 +69,7 @@ export default {
         "X-M2M-RI": "12345",
         "X-M2M-Origin": "SM",
         Accept: "application/json",
-        "Content-Type": "application/json; ty=4",
+        "Content-Type": "application/json",
       },
       baseURL: "http://203.253.128.139:7599",
       sensorList: [],
@@ -82,11 +82,10 @@ export default {
   methods: {
     getSensors() {
       axios
-        .get(this.baseURL + "/wdc_base/kwater-test", {
+        .get(this.baseURL + "/wdc_base/kwater-poc", {
           headers: this.headers,
           params: {
             fu: 1,
-            ty: 3,
             lvl: 1,
           },
         })
@@ -101,7 +100,7 @@ export default {
     },
     getSensorInfo(sensorAddress) {
       axios
-        .get(this.baseURL + "/" + sensorAddress + "/config/la", {
+        .get(this.baseURL + "/" + sensorAddress + "/WtqltMesureSetup", {
           headers: this.headers,
         })
         .then((response) => {
@@ -109,25 +108,23 @@ export default {
             this.sensorConfList.push({
               rn: sensorAddress, // "wdc_base/kwater-test/sensor1"
               sensorNum: sensorAddress.split("/")[2],
-              reportingPeriod: value.con.reportingPeriod,
-              validMax: value.con.validMax,
-              validMin: value.con.validMin,
+              reportingPeriod: value.reprtIntrvl,
+              validMax: value.maxValidNtu,
+              validMin: value.minValidNtu,
             });
           }
         });
     },
     setConfig(address, reportTime, min, max) {
-      const sensorURL = this.baseURL + "/" + address + "/config";
+      const sensorURL = this.baseURL + "/" + address + "/WtqltMesureSetup";
       const body = {
-        "m2m:cin": {
-          con: {
-            reportingPeriod: reportTime,
-            validMin: min,
-            validMax: max,
-          },
+        "wat:wqms": {
+          reprtIntrvl: reportTime,
+          minValidNtu: min,
+          maxValidNtu: max,
         },
       };
-      axios.post(sensorURL, body, { headers: this.headers }).then(() => {});
+      axios.put(sensorURL, body, { headers: this.headers }).then(() => {});
     },
   },
   mounted() {
