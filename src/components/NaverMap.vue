@@ -14,7 +14,7 @@
             <div style="margin: 30px 0px 30px 0px">
               <div v-for="sensor in sensorInfoList" :key="sensor.rn">
                 <div class="request">
-                      <Alarm v-bind:rn="sensor.rn"></Alarm>
+                  <Alarm v-bind:rn="sensor.rn"></Alarm>
                   <el-row :gutter="20">
                     <el-col :span="4">
                       <el-button
@@ -24,7 +24,7 @@
                       >
                         {{ sensor.rn }}
                       </el-button>
-                      <Download></Download>
+                      <Download v-bind:rn="sensor.rn"></Download>
                     </el-col>
                     <el-col :span="4">
                       <GaugeChart
@@ -77,7 +77,7 @@ var map = null;
 var newMark = [];
 var rnList = [];
 var map = null;
-var markers = []
+var markers = [];
 
 var lat,
   lng,
@@ -85,7 +85,14 @@ var lat,
 
 export default {
   name: "hello",
-  components: { LineChart, SensorRegist, GaugeChart, SensorInfo, Download, Alarm },
+  components: {
+    LineChart,
+    SensorRegist,
+    GaugeChart,
+    SensorInfo,
+    Download,
+    Alarm,
+  },
   data() {
     return {
       headers: {
@@ -98,7 +105,7 @@ export default {
       sensorList: [],
       sensorInfoList: [],
       icon: "",
-      isActive: false
+      isActive: false,
     };
   },
   methods: {
@@ -262,7 +269,7 @@ export default {
           "X-M2M-Origin": "SM",
           Accept: "application/json",
         };
-        const baseURL = "http://203.253.128.139:7599/wdc_base/kwater-test";
+        const baseURL = "http://203.253.128.139:7599/wdc_base/kwater-poc";
         const url = baseURL + "?gsf=1&gmty=3&rcn=8&geom=" + poly;
         axios.get(url, { headers }).then((response) => {
           for (const [key, value] of Object.entries(response.data)) {
@@ -286,7 +293,7 @@ export default {
         var sensorurl;
 
         for (const rn of rnList) {
-          sensorurl = baseURL + "/" + rn + "/report/la";
+          sensorurl = baseURL + "/" + rn + "/WtqltGnrlMesureIem";
           axios.get(sensorurl, { headers }).then((sensorResponse) => {
             for (const [sensorkey, sensorvalue] of Object.entries(
               sensorResponse.data
@@ -294,10 +301,11 @@ export default {
               for (const [sensorkey2, sensorvalue2] of Object.entries(
                 sensorvalue
               )) {
-                if (sensorkey2 == "con") {
+                if (sensorkey2 == "ntu") {
                   console.log("rn: " + rn);
 
-                  const sensorConfurl = baseURL + "/" + rn + "/config/la";
+                  const sensorConfurl =
+                    baseURL + "/" + rn + "/WtqltMesureSetup";
                   axios
                     .get(sensorConfurl, { headers })
                     .then((sensorResponse) => {
@@ -305,40 +313,33 @@ export default {
                         sensorconkey,
                         sensorConfvalue,
                       ] of Object.entries(sensorResponse.data)) {
-                        for (const [
-                          sensorConfkey2,
-                          sensorConfvalue2,
-                        ] of Object.entries(sensorConfvalue)) {
-                          if (sensorConfkey2 == "con") {
-                            if (
-                              sensorvalue2 < sensorConfvalue2.validMax &&
-                              sensorvalue2 > sensorConfvalue2.validMin
-                            ) {
-                              console.log("gr: " + sensorvalue2);
-                              for (var i = 0; i < newMark.length; i++) {
-                                var eachMark = new naver.maps.Marker({
-                                  position: new naver.maps.LatLng(
-                                    newMark[i][0],
-                                    newMark[i][1]
-                                  ),
-                                  map: map,
-                                  icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
-                                });
-                                markers.push(eachMark);
-                              }
-                            } else {
-                              for (var i = 0; i < newMark.length; i++) {
-                                var eachMark = new naver.maps.Marker({
-                                  position: new naver.maps.LatLng(
-                                    newMark[i][0],
-                                    newMark[i][1]
-                                  ),
-                                  map: map,
-                                  icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-                                });
-                                markers.push(eachMark);
-                              }
-                            }
+                        if (
+                          sensorvalue2 < sensorConfvalue.maxValidNtu &&
+                          sensorvalue2 > sensorConfvalue.minValidNtu
+                        ) {
+                          console.log("gr: " + sensorvalue2);
+                          for (var i = 0; i < newMark.length; i++) {
+                            var eachMark = new naver.maps.Marker({
+                              position: new naver.maps.LatLng(
+                                newMark[i][0],
+                                newMark[i][1]
+                              ),
+                              map: map,
+                              icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png",
+                            });
+                            markers.push(eachMark);
+                          }
+                        } else {
+                          for (var i = 0; i < newMark.length; i++) {
+                            var eachMark = new naver.maps.Marker({
+                              position: new naver.maps.LatLng(
+                                newMark[i][0],
+                                newMark[i][1]
+                              ),
+                              map: map,
+                              icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                            });
+                            markers.push(eachMark);
                           }
                         }
                       }
