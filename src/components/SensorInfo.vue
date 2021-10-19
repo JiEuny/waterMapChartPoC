@@ -20,20 +20,22 @@
               </el-select>
             </el-col>
             <el-col :span="4" class="content">
-              <el-button type="info" @click="configGet()"> GET </el-button>
+              <el-button type="info" @click="configGet()">
+                센서 불러오기
+              </el-button>
             </el-col>
-            <el-col :span="5" class="content"></el-col>
-            <el-col :span="1" class="content"></el-col>
-            <el-col :span="4">
+            <el-col :span="5" class="content">
               <el-button
                 type="info"
                 @click="
-                  config(sensorID, manufacturer, managmentDep, manager, contact)
+                  config(sensorID, manufacturer, managmentDep, manager, contact, geoX, geoY)
                 "
               >
-                UPDATE
+                센서 업데이트
               </el-button>
             </el-col>
+            <el-col :span="1" class="content"></el-col>
+            <el-col :span="4"> </el-col>
             <el-col :span="3" class="content"></el-col>
           </el-row>
           <br />
@@ -146,8 +148,8 @@ export default {
       baseURL: "http://203.253.128.139:7599/wdc_base/kwater-poc/",
       sensorID: "",
       manufacturer: "",
-      geoX: "",
-      geoY: "",
+      geoX: 0,
+      geoY: 0,
       managmentDep: "",
       manager: "",
       contact: "",
@@ -175,7 +177,7 @@ export default {
         }
       });
     },
-    config: function (sensorID, manufacturer, managmentDep, manager, contact) {
+    config: function (sensorID, manufacturer, managmentDep, manager, contact, geoX, geoY) {
       const sensorURL = this.baseURL + this.value;
       const body = {
         "wat:wqmi": {
@@ -186,6 +188,12 @@ export default {
             "manager:" + manager,
             "contact:" + contact,
           ],
+          loc: {
+            typ: 1,
+            crd: [
+              geoX, geoY
+            ]
+          }
         },
       };
       axios.put(sensorURL, body, { headers: this.headers }).then(() => {});

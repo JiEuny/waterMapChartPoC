@@ -21,7 +21,7 @@ export default {
   methods: {
     click() {
       axios
-        .get("http://203.253.128.179/kwater/sensor2.csv", {
+        .get("http://203.253.128.179/kwater/" + this.rn + ".csv", {
           responseType: "blob",
         })
         .then((response) => {
